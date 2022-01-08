@@ -2,7 +2,7 @@ const content = require('../database.json');
 const teachers = require('../teachers.json');
 const { paginate } = require('../utils/paginate');
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 15;
 
 module.exports = function ContentService() {
     const pages = paginate(content, PAGE_SIZE);
