@@ -10,9 +10,12 @@ const contentService = ContentService();
 router.get('/', 
   validationHandler(getContentSchema, 'query'),
   async (req, res) => {
-    const { page } = req.query;
+    const { page, categories } = req.query;
     try {
-      const content = contentService.getAllContent(Number(page ?? 1));
+      const content = categories ?
+        contentService.getContentByCategory(categories, Number(page ?? 1))
+        :
+        contentService.getAllContent(Number(page ?? 1));
       res.json(content);
     } catch (error) {
       next(boom.badRequest(error.message));
