@@ -45,9 +45,17 @@ module.exports = function ContentService() {
         }
     }
 
+    function getContentById(id) {
+      const course = content.find(c => c.id === id);
+      if (!course) throw new Error('the id does not exits');
+      const [result] = addTeacherToContent([course]);
+      return result;
+    }
+
     return {
       getAllContent,
-      getContentByCategory
+      getContentByCategory,
+      getContentById,
     }
 }
 
