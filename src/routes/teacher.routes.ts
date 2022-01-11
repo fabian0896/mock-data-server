@@ -1,12 +1,12 @@
-const { Router } = require('express');
-const TeacherService = require('../services/teacher.service');
+import { Router } from 'express';
+import TeacherService from '../services/teacher.service';
 
 const router = Router();
-const teacherService = TeacherService()
+// const teacherService = new TeacherService()
 
 router.get('/', (req, res, next) => {
   try {
-    const teachers = teacherService.getAll();
+    const teachers = TeacherService.getAll();
     res.json(teachers);
   } catch (error) {
     next(error);
@@ -16,11 +16,11 @@ router.get('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   const { id } = req.params;
   try {
-    const teacher = teacherService.getById(Number(id));
+    const teacher = TeacherService.getById(Number(id));
     res.json(teacher);
   } catch (error) {
     next(error);
   }
 });
 
-module.exports = router;
+export default router;

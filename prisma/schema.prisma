@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Picture {
+  id        Int     @id() @default(autoincrement())
+  large     String
+  medium    String
+  thumbnail String
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+  teacherId Int     @unique
+}
+
+model Flags {
+  id        Int     @id() @default(autoincrement())
+  png       String
+  svg       String
+  Country   Country @relation(fields: [countryId], references: [id])
+  countryId Int     @unique
+}
+
+model Country {
+  id        Int     @id() @default(autoincrement())
+  name      String
+  nat       String
+  flags     Flags?
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+  teacherId Int     @unique
+}
+
+model Teacher {
+  id      Int      @id() @default(autoincrement())
+  name    String
+  picture Picture?
+  email   String
+  age     Int
+  country Country?
+  courses Course[]
+  nat     String
+}
+
+model Module {
+  id          Int     @id() @default(autoincrement())
+  title       String
+  description String
+  lessons     Int[]
+  Course      Course? @relation(fields: [courseId], references: [id])
+  courseId    Int?
+}
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  title       String
+  banner      String
+  description String
+  level       Level
+  teacher     Teacher  @relation(fields: [teacherId], references: [id])
+  teacherId   Int
+  Content     Module[]
+  score       Int
+  limit_date  DateTime
+  created_at  DateTime @default(now())
+  students    Int
+  category    Category
+  moduleId    Int
+}
+
+enum Level {
+  advance
+  medium
+  basic
+}
+
+enum Category {
+  development
+  personal
+  photography
+  business
+  marketing
+  art
+}

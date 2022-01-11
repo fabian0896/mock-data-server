@@ -1,8 +1,8 @@
-const express = require('express');
-const cors = require('cors')
+import express from 'express';
+import cors from 'cors';
 
-const setupRoutes = require('./routes');
-const errorHandler = require('./middleware/error.handler');
+import setupRoutes from './routes';
+import errorHandler from './middleware/error.handler';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
