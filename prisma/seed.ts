@@ -1,5 +1,4 @@
 import { PrismaClient, Prisma } from '@prisma/client';
-import { any, number, string } from 'joi';
 import content from '../src/database.json';
 
 
@@ -681,7 +680,7 @@ async function seedContent() {
 
 (async () => {
   console.log('Empezamos esto!');
-  // await seedTeachers();
+  await seedTeachers();
   await seedContent();
   console.log('Listo ya termine');
 })()
