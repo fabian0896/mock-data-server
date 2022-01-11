@@ -64,13 +64,12 @@ model Course {
   level       Level
   teacher     Teacher  @relation(fields: [teacherId], references: [id])
   teacherId   Int
-  Content     Module[]
+  content     Module[]
   score       Int
   limit_date  DateTime
   created_at  DateTime @default(now())
   students    Int
   category    Category
-  moduleId    Int
 }
 
 enum Level {
