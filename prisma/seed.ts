@@ -1,118 +1,7 @@
 import { PrismaClient, Prisma } from '@prisma/client';
-import fs from 'fs/promises';
+import { any, number, string } from 'joi';
+import content from '../src/database.json';
 
-const content = {
-  "id": 11,
-  "title": "Curso 11",
-  "banner": "http://dummyimage.com/243x100.png/dddddd/000000",
-  "description": "Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
-  "level": "medium",
-  "teacher": 9,
-  "content": [
-    {
-      "title": "Módulo 1",
-      "description": "Gravida ac tempor magnis quisque hendrerit facilisis vivamus parturient sodales curae fermentum, volutpat sagittis integer eu vel lacinia orci maecenas velit tristique.",
-      "lessons": [
-        788,
-        720,
-        394,
-        769,
-        865,
-        900,
-        712,
-        373,
-        883,
-        741
-      ]
-    },
-    {
-      "title": "Módulo 2",
-      "description": "Nascetur donec maecenas tellus feugiat consequat luctus ultrices posuere enim diam aliquet pulvinar quam dis, rutrum ad per penatibus rhoncus potenti vel dui et arcu etiam primis inceptos.",
-      "lessons": [
-        199,
-        337,
-        592,
-        336
-      ]
-    },
-    {
-      "title": "Módulo 3",
-      "description": "Pulvinar egestas malesuada sem torquent fermentum imperdiet duis tellus felis aliquet, dignissim tincidunt suscipit vel quisque nullam nam dapibus metus.",
-      "lessons": [
-        377,
-        123,
-        357,
-        424,
-        141,
-        360,
-        839,
-        897
-      ]
-    },
-    {
-      "title": "Módulo 4",
-      "description": "Conubia natoque curae aliquet himenaeos taciti et tempor mus, fermentum venenatis turpis parturient potenti scelerisque cum purus lobortis, vehicula tempus condimentum mi lacinia mattis velit.",
-      "lessons": [
-        137,
-        851,
-        811,
-        472,
-        458,
-        341,
-        927,
-        732,
-        160
-      ]
-    },
-    {
-      "title": "Módulo 5",
-      "description": "Volutpat euismod hendrerit enim scelerisque pharetra ad sem morbi eget quis, cursus class urna duis luctus nam facilisi velit faucibus, sed vehicula consequat facilisis blandit praesent fusce habitant semper.",
-      "lessons": [
-        198,
-        423,
-        928,
-        936,
-        739,
-        292,
-        923,
-        484,
-        691,
-        409
-      ]
-    },
-    {
-      "title": "Módulo 6",
-      "description": "Volutpat odio duis nibh nisl molestie vitae ut, penatibus turpis urna natoque cum senectus ante, aenean porta phasellus curae lectus sapien.",
-      "lessons": [
-        142,
-        279,
-        930,
-        272,
-        419,
-        946,
-        209,
-        158,
-        622
-      ]
-    },
-    {
-      "title": "Módulo 7",
-      "description": "Faucibus vestibulum dignissim suspendisse inceptos nulla dui quisque sollicitudin convallis, laoreet penatibus nisl ante est odio magnis aliquam egestas, integer netus consequat purus ultrices felis torquent aliquet.",
-      "lessons": [
-        536,
-        414,
-        877,
-        766,
-        602
-      ]
-    }
-  ],
-  "score": 5,
-  "limit_date": "3/20/2022",
-  "created_at": "1/14/2022",
-  "students": 26,
-  "category": "art"
-}
 
 const teachers = [
   {
@@ -750,8 +639,7 @@ function formatTacher(t: any) {
   return res;
 }
 
-function formatCourse() {
-  const c = content;
+function formatCourse(c: any) {
   const level = c.level as 'advance' |'medium' | 'basic';
   const category = c.category as 'development' | 'personal' | 'photography' | 'business' | 'marketing' |'art'
   const res: Prisma.CourseCreateInput = {
@@ -760,8 +648,8 @@ function formatCourse() {
     description: c.description,
     level,
     score: c.score,
-    limit_date: c.limit_date,
-    created_at: c.created_at,
+    limit_date: new Date(c.limit_date),
+    created_at: new Date(c.created_at),
     students: c.students,
     category,
     teacher: {
@@ -770,7 +658,7 @@ function formatCourse() {
       }
     },
     content: {
-      create: c.content.map(d => ({ title: d.title, description: d.description, lessons: d.lessons })),
+      create: c.content.map((d: any) => ({ title: d.title, description: d.description, lessons: d.lessons })),
     },
   };
   return res;
@@ -784,14 +672,17 @@ async function seedTeachers() {
 }
 
 async function seedContent() {
-  
+  await Promise.all(
+    content.map(t => prisma.course.create({ data: formatCourse(t) }))
+  );
 }
 
 
 
 (async () => {
   console.log('Empezamos esto!');
-  await seedTeachers();
+  // await seedTeachers();
+  await seedContent();
   console.log('Listo ya termine');
 })()
 .finally(() => {
