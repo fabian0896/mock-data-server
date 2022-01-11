@@ -52,7 +52,7 @@ model Module {
   title       String
   description String
   lessons     Int[]
-  Course      Course? @relation(fields: [courseId], references: [id])
+  course      Course? @relation(fields: [courseId], references: [id])
   courseId    Int?
 }
 
