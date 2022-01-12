@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable max-len */
 import { Request, Response, NextFunction } from 'express';
 import { Boom, boomify } from '@hapi/boom';
 
-export default function errorHandler (error: Error | Boom, _req: Request, res: Response, _next: NextFunction) {
+export default function errorHandler(error: Error | Boom, _req: Request, res: Response, _next: NextFunction) {
   if (error instanceof Boom) {
     const { output } = error;
     res.status(output.statusCode).json(output.payload);
@@ -9,4 +11,4 @@ export default function errorHandler (error: Error | Boom, _req: Request, res: R
   }
   const boomError = boomify(error);
   res.status(boomError.output.statusCode).json(boomError.output.payload);
-};
+}

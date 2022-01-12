@@ -1,23 +1,33 @@
-import teachers  from '../teachers.json';
+import boom from '@hapi/boom';
+import prisma from '../lib/prisma';
 
-export default class _TeacherService {
-  constructor() {
-
-  }
-
-  static getAll() {
+export default class TeacherService {
+  static async getAll() {
+    const result = await prisma.teacher.findMany({
+      include: {
+        country: true,
+        picture: true,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
     return {
-      result: teachers,
-    }
-  }
-
-  static getById(id: number | undefined) {
-    if (!id) throw new Error('id is required to consult');
-    const teacher = teachers.find(t => t.id === id);
-    if (!teacher) throw new Error('The teacher dosn`t exits');
-    return {
-      result: teacher,
+      result,
     };
+  }
+
+  static async getById(id: number | undefined) {
+    if (!id) throw boom.badRequest();
+    const result = await prisma.teacher.findUnique({
+      where: { id },
+      include: {
+        country: true,
+        picture: true,
+      },
+    });
+    if (!result) throw boom.notFound();
+    return { result };
   }
 }
 

@@ -4,19 +4,19 @@ import TeacherService from '../services/teacher.service';
 const router = Router();
 // const teacherService = new TeacherService()
 
-router.get('/', (req, res, next) => {
+router.get('/', async (_req, res, next) => {
   try {
-    const teachers = TeacherService.getAll();
+    const teachers = await TeacherService.getAll();
     res.json(teachers);
   } catch (error) {
     next(error);
   }
 });
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
-    const teacher = TeacherService.getById(Number(id));
+    const teacher = await TeacherService.getById(Number(id));
     res.json(teacher);
   } catch (error) {
     next(error);
